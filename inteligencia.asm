@@ -2,11 +2,6 @@
 
 
 ESCOLHA_DIFICIL:
-# tempo
-	csrr s9, 3074
-	csrr s10, 3072
-	csrr s11, 3073
-	
 	li a0,2
 	jal melhor_jogada
 	
@@ -25,28 +20,25 @@ ESCOLHA_DIFICIL:
 	
 FIM_ESCOLHA_DIFICIL:
 	jal zero,JOGADA_PC
-	
-ESCOLHA_MEDIA:
-#tempo
-	csrr s9, 3074
-	csrr s10, 3072
-	csrr s11, 3073
 
+
+ESCOLHA_MEDIA:
 	li a0,2
 	jal melhor_jogada
 	jal zero,JOGADA_PC
 
 
 ESCOLHA_FACIL:
-#tempo
-	csrr s9, 3074
-	csrr s10, 3072
-	csrr s11, 3073
-
 	li a0,0
 	li a1,7
 	li a7,42
-	ecall
+	la t0, altura
+	Loop_Escolha_Facil:
+		ecall
+		add t1, t0, a0
+		lb t1, 0(t1)
+		li t2, 6
+		beq t2, t1, Loop_Escolha_Facil
 	mv a1,a0
 	jal zero,JOGADA_PC
 

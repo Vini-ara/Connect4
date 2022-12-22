@@ -19,12 +19,6 @@ vetor_maiores: .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 player_coins:   .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ai_coins:       .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-#contadores 
-tempo_exc_IA:   .word 0
-ciclo:			.word 0
-instrucoes:  	.word 0 
-
-
 .text	
 SET_UP:
 	li s0, 1
@@ -35,7 +29,6 @@ SET_UP:
 	addi s4, s4, 20
 	la s5, red_won
 	la s6, yellow_won
-	li s8, 0
 
 	jal MENU_SET_UP
 
@@ -75,7 +68,6 @@ GAMELOOP:
 	jal KEY1
 	mv a1,a0
 	addi a1,a1,-48 #transforma string em int
-	
 	#atualiza altura da coluna
 	la t0,altura
 	add t0,t0,a1
@@ -103,9 +95,9 @@ GAMELOOP:
 	li t0,-1
 	mul s0,s0,t0
 	jal zero,GAMELOOP
-
+	
 VEZ_PC:
-	addi s8, s8, 1
+
 	li t0,2
 	beq s1,t0,ESCOLHA_DIFICIL 
 	li t0,1
@@ -114,31 +106,6 @@ VEZ_PC:
 	
 	#atualiza altura da coluna
 JOGADA_PC:
-#fim  da IA
-	csrr t0, 3073
-	csrr t1, 3072
-	csrr t2, 3074 
-
-	sub  s9, t2, s9
-	sub  s10, t1, s10
-	sub  s11, t0, s11
-
-	la t0, tempo_exc_IA
-	la t1, ciclo
-	la t2, instrucoes
-
-	lw t3, 0(t0)
-	lw t4, 0(t1)
-	lw t5, 0(t2)
-
-	add s9, s9, t5
-	add s10, s10, t4
-	add s11, s11, t3
-
-	sw s9,  0(t0)
-	sw s10, 0(t1)
-	sw s11, 0(t2)
-
 	la t0,altura
 	add t0,t0,a1
 	lb t1,0(t0)
@@ -146,9 +113,9 @@ JOGADA_PC:
 	sb t1,0(t0)
 	#continua com os argumentos de ADD_COIN
 	
-	la a0,grid
-	mv a2,s3
-	li a3,2
+	la a0, grid
+	mv a2, s3
+	li a3, 2
 	la a4, ai_coins
 	jal ADD_COIN
 
@@ -165,7 +132,7 @@ JOGADA_PC:
 	
 	#muda jogador
 	li t0,-1
-	mul s0,s0,t0
+	mul s0, s0, t0
 	
 	jal PRINTA_MATRIZ
 	
@@ -179,39 +146,7 @@ INFINITO:
 	li a7, 32
     li a0, 2500
     ecall
-    
-    la t0, tempo_exc_IA 
-	la t1, ciclo
-	la t2, instrucoes
 	
-	lw t0, 0(t0)
-	lw t1, 0(t1)
-	lw t2, 0(t2)
-	
-	fcvt.s.w ft0, t0
-	fcvt.s.w ft1, t1
-	fcvt.s.w ft2, t2
-	
-	fcvt.s.w fs0, s8
-	
-	fdiv.s ft0, ft0, fs0
-	fdiv.s ft1, ft1, fs0
-	fdiv.s ft2, ft2, fs0
-	
-	fmv.s fa0, ft0
-	li a7, 2
-	ecall
-	
-	fmv.s fa0, ft1
-	li a7, 2
-	ecall
-	
-	fmv.s fa0, ft1
-	li a7, 2
-	ecall 
-	
-	
-
 	li a7, 10
 	ecall
 

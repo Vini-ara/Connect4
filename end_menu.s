@@ -7,6 +7,8 @@ END_MENU:
     mv a3, zero
     jal DRAW_IMAGE
 
+    # Resetar o turno
+    li s0, 1
     # Limpar grid
     la a0, grid
     li a1, 42

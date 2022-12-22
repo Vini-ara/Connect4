@@ -17,19 +17,21 @@ CHECK_VICTORY:
 
     mv t0, a0
     mv t1, a1
+    mv t6, t1
 
     Loop_Check_Victory:
         li t2, 42
         slli t2, t2, 2
         add t2, t2, t1
-        beq t1, t2, Ret_Check_Victory
+
+        beq t6, t2, Ret_Check_Victory
 
         # Load no endereço da peça
-        lw t3, 0(t1)
+        lw t3, 0(t6)
         beqz t3, Ret_Check_Victory
         
         # Load na coluna da peça
-        lb t4, 4(t1)
+        lb t4, 4(t6)
         
         # Verificar se é possível ter 3 peças a esquerda
         li t5, 3
@@ -123,7 +125,7 @@ CHECK_VICTORY:
 
         End_Loop_Check_Victory:
         # Nenhuma condição foi atendida --> Retornar 0
-        addi t1, t1, 8
+        addi t6, t6, 8
         mv a0, zero
         j Loop_Check_Victory
 

@@ -24,7 +24,8 @@ ADD_COIN:
   li t1, 1 
   mul t1, t1, a1
   add t1, t1, a0
-
+  mv t6, a1
+  
   # verifica se a primeira posicao ja esta ocupada
   lb t2, 0(t1) 
   bne t2, zero, RET_ADD_COIN
