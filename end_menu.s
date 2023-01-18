@@ -48,7 +48,7 @@ END_MENU:
 
 
 LOSE_SCREEN:
-    mv a0, s6
+    lw a0, reg_s6
     li a1, 240
     li a2, 180
     mv a3, zero

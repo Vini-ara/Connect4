@@ -2,10 +2,12 @@
 
 
 ESCOLHA_DIFICIL:
+	csrr s7, 3072	# Ciclos
+	csrr s8, 3074	# Instrucoes
+	csrr s9, 3073	# Tempo medido
+	
 	li a0,2
 	jal melhor_jogada
-	
-	
 	addi sp,sp,-8
 	sw a0,4(sp)
 	sw a1,0(sp)
@@ -19,27 +21,96 @@ ESCOLHA_DIFICIL:
 	mv a1,t1
 	
 FIM_ESCOLHA_DIFICIL:
+	csrr t0, 3073
+	csrr t1, 3074
+	csrr t2, 3072
+
+	sub s9, t0, s9
+	sub s8, t1, s8
+	sub s7, t2, s7
+	addi s7, s7, -4
+	addi s8, s8, -2
+
+	fcvt.s.w fs8,s8
+	li t0,0x36AB31D9
+	fmv.s.x ft0,t0
+	fmul.s fs11,ft0,fs8
+	
 	jal zero,JOGADA_PC
 
 
 ESCOLHA_MEDIA:
+	csrr s7, 3072	# Ciclos iniciais
+	csrr s8, 3074	# Instrucoes iniciais
+	csrr s9, 3073	# Tempo medido inicial
 	li a0,2
 	jal melhor_jogada
+	csrr t0, 3073
+	csrr t1, 3074
+	csrr t2, 3072
+
+	sub s9, t0, s9		# Tempo medido final
+	sub s8, t1, s8		# Instrucoes final
+	sub s7, t2, s7		# Ciclos final
+	addi s7, s7, -4		# Variacao de ciclos -4 (desconsiderar as outras instruções de medida)
+	addi s8, s8, -2		# Vriação de tempo - 2 (desconsiderar as outras instruções de medida)
+	
+	fcvt.s.w fs8,s8
+	li t0,0x36AB31D9
+	fmv.s.x ft0,t0
+	fmul.s fs11,ft0,fs8
+	
+	
+	
 	jal zero,JOGADA_PC
 
 
 ESCOLHA_FACIL:
+	csrr s7, 3072	# Ciclos iniciais
+	csrr s8, 3074	# Instrucoes iniciais
+	csrr s9, 3073	# Tempo medido inicial
 	li a0,0
 	li a1,7
-	li a7,42
+
 	la t0, altura
 	Loop_Escolha_Facil:
-		ecall
-		add t1, t0, a0
-		lb t1, 0(t1)
-		li t2, 6
-		beq t2, t1, Loop_Escolha_Facil
+	addi sp,sp,-4
+	sw ra,0(sp)
+	
+	jal ra,Random.DE1
+	li t1,7
+	and a0,a0,t1
+	bne a0,t1,MENOR_SETE
+	addi a0,a0,-1
+		
+MENOR_SETE:
+	lw ra,0(sp)
+	addi sp,sp,4
+	la t0,altura
+	
+	
+
+	add t1, t0, a0
+	lb t1, 0(t1)
+	li t2, 6
+	beq t2, t1, Loop_Escolha_Facil
+	
 	mv a1,a0
+
+	csrr t0, 3073
+	csrr t1, 3074
+	csrr t2, 3072
+	sub s9, t0, s9		# Tempo medido final
+	sub s8, t1, s8		# Instrucoes final
+	sub s7, t2, s7		# Ciclos final
+	addi s7, s7, -4		# Variacao de ciclos -4 (desconsiderar as outras instruções de medida)
+	addi s8, s8, -2		# Vriação de tempo - 2 (desconsiderar as outras instruções de medida)
+
+	fcvt.s.w fs8,s8
+	li t0,0x36AB31D9
+	fmv.s.x ft0,t0
+	fmul.s fs11,ft0,fs8
+
 	jal zero,JOGADA_PC
 
 
@@ -444,6 +515,5 @@ NOVA_LINHA:
 	bne t3,t2,LOOP_PRINTA_MATRIZ
 	ret
 	
-	
-	
-	
+
+

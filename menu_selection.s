@@ -34,14 +34,18 @@ MENU_SELECTION:
       la s2, yellow_coin # cor do jogador = amarela
       la s3, red_coin
       la s5, yellow_won
-      la s6, red_won
+      la t0, red_won
+	la t1, reg_s6
+	sw t0, (t1)
       jal zero, COLOR_MENU_LOOP # volta para o loop
       
     SET_RED:
       la s2, red_coin # cor do jogador = vermelha
       la s3, yellow_coin
       la s5, red_won
-      la s6, yellow_won
+      la t0, yellow_won
+	la t1, reg_s6
+	sw t0, (t1)
       jal zero, COLOR_MENU_LOOP # volta para o loop
 
     SET_EASY:

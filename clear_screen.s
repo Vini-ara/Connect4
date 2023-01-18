@@ -17,7 +17,7 @@ CLEAR_SCREEN:
     sw t1, 0(sp)
     # Calculando endereço do Frame
     li t0, 0xFF0                    # Inicializando t0 = 0xFF0
-    add t0, t0, a3                  # t0 = t0 + a3
+    add t0, t0, a0                  # t0 = t0 + a3
     slli t0, t0, 20                 # Shiftando 20 bits a esquerda de t0
 
     li t1, 0 # contador de pixels

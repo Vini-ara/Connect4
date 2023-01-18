@@ -41,10 +41,14 @@ COIN_ANIMATION:
         mv a3, zero
         jal DRAW_IMAGE
         # Para o programa por alguns segundos
-        li a0, 350
-        li a7, 32
-        ecall
+        li a0, 200
+        #li a7, 32
+        #ecall
+        
+        csrr a1,3073
+        jal zero,LOOP_SLEEP
         # Calcular a posição da próxima moeda
+volta_sleep:
         addi t1, t1, 7
         addi t3, t3, 32
         # Verificar se chegou na última linha
@@ -69,4 +73,10 @@ COIN_ANIMATION:
     ret
 
 
+LOOP_SLEEP:
+	csrr a6,3073
+	sub t6,a6,a1
+	blt t6,a0,LOOP_SLEEP
+	jal zero,volta_sleep
+	
 

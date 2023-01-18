@@ -1,4 +1,13 @@
+.include "MACROSv21.s"
 .data
+frequencia: .string "frequencia = "
+mhz: .string "Mhz"
+ciclos: .string "ciclos = "
+
+tempo_m: .string "Tempo Medido = "
+ms: .string "ms"
+cpi: .string "CPI media = "
+tempo: .string "Tempo_c"
 .include "data/tile.data"
 .include "data/red_coin.data"
 .include "data/yellow_coin.data"
@@ -7,6 +16,8 @@
 .include "data/yellow_won.data"
 .include "data/red_won.data"
 .include "data/tie_img.data"
+instrucoes: .string "Instrucoes = "
+
 
 
 # Tabuleiro do jogo
@@ -19,8 +30,18 @@ vetor_maiores: .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 player_coins:   .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ai_coins:       .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
+# Vez de jogar --> ponteiro para a imagem quando o jogador perde
+reg_s6: .word 0
+reg_s8: .word 0
+reg_s9: .word 0
+# 
 .text	
+.include "print_info.asm"
+
 SET_UP:
+	li a0,1
+	jal CLEAR_SCREEN
+	la a0,frequencia
 	li s0, 1
 	li s1, 2 			# nivel dificil
   	la s2, red_coin 	# cor do jogador
@@ -28,11 +49,23 @@ SET_UP:
 	la s4, grid			# endereço bolado
 	addi s4, s4, 20
 	la s5, red_won
-	la s6, yellow_won
+	la t0, yellow_won
+	la t1, reg_s6
+	sw t0, (t1)
 
+	li s6, 0x3E48B439 	# Frequencia
+	fmv.s.x fs6,s6
+	
+	mv s7, zero	# Ciclos
+	mv s8, zero	# Instrucoes
+	mv s9, zero	# Tempo Medido
+	li s10, 1	# CPI media (UNICICLO --> CPI = 1)
+	mv s11, zero	# Tempo calculado
+	
 	jal MENU_SET_UP
 
 MENU_SET_UP:
+	li a0,0
   	jal CLEAR_SCREEN
 	la a0, menu
   	li a1, 0
@@ -41,7 +74,7 @@ MENU_SET_UP:
   	jal DRAW_IMAGE
 
   	jal MENU_SELECTION
-
+	li a0,0
   	jal CLEAR_SCREEN
 
 	la a0, grid
@@ -49,6 +82,7 @@ MENU_SET_UP:
 	jal GAMELOOP
 
 GAMELOOP_SET_UP:
+	li a0,0 
 	jal CLEAR_SCREEN
 	jal DRAW_GRID
 	jal GAMELOOP
@@ -81,7 +115,7 @@ GAMELOOP:
 	li a3,1
 	la a4, player_coins
 	jal ADD_COIN
-	jal PRINTA_MATRIZ
+
 	
 
 	# Verifica se o jogador venceu
@@ -134,7 +168,7 @@ JOGADA_PC:
 	li t0,-1
 	mul s0, s0, t0
 	
-	jal PRINTA_MATRIZ
+	jal PRINT_INFO
 	
 	jal zero,GAMELOOP
 	
@@ -159,15 +193,25 @@ LOOP: 	lw t0,0(t1)			# Le bit de Controle Teclado
    	lw a0,4(t1)			# le o valor da tecla
 	ret				# retorna
 	
-.include "coin_animation.s"
+	
+
+.include "end_menu.s"
 .include "draw_grid.s"
+
+
+.include "coin_animation.s"
+
 .include "add_coin.s"
 .include "inteligencia.asm"
 .include "get_keypress.s"
 .include "menu_selection.s"
 .include "clear_screen.s"
 .include "check_victory.s"
-.include "end_menu.s"
+
 .include "draw_image.s"
 .include "check_tie.s"
 .include "clear_vector.s"
+.include "SYSTEMv21.s"
+#.include "MACROSv21.s"
+#.include "SYSTEMv21.s"
+
