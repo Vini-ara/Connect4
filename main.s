@@ -53,7 +53,8 @@ SET_UP:
 	la t1, reg_s6
 	sw t0, (t1)
 
-	li s6, 0x3E48B439 	# Frequencia
+	#li s6, 0x3E48B439 	# Frequencia Uniciclo
+	li s6, 0x40855555	# Frequencia Multiciclo
 	fmv.s.x fs6,s6
 	
 	mv s7, zero	# Ciclos

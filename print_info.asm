@@ -89,7 +89,7 @@ PRINT_INFO:
 	
 	jal printString
 	
-	#nue=mero tempo
+	#numero tempo
 	
 	la t0, reg_s9
 	lw a0, 0(t0)

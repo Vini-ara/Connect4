@@ -45,6 +45,12 @@ ESCOLHA_MEDIA:
 	csrr s9, 3073	# Tempo medido inicial
 	li a0,2
 	jal melhor_jogada
+	mv t0, zero
+	loop_teste:
+		fadd.s ft0, ft1, ft2
+		addi t0, t0, 1
+		li t1, 10000
+		bne t0, t1, loop_teste
 	csrr t0, 3073
 	csrr t1, 3074
 	csrr t2, 3072
